@@ -10,11 +10,13 @@ import datetime as dt
 
 from sqlalchemy.ext.declarative import declarative_base
 
+from app.algorithm.basis import compute_basis
 from app.db.session import project_engine
 from app.tushare import index_future_basic, index_price, future_date_price
-from app.utils import to_pydatetime
+from app.common.utils import to_pydatetime
 
 Base = declarative_base()
+INDEX_LIST = ['IC', 'IF', 'IH']
 
 
 class BasisSupervise(Base):
@@ -56,8 +58,10 @@ class BasisSupervise(Base):
         reports = []
         format_date = to_pydatetime(date)
         basic_info = index_future_basic(format_date.strftime('%Y%m%d'))
-        for va_type in ['IC', 'IF', 'IH']:
+        for va_type in INDEX_LIST:
             spot_price = index_price(va_type, format_date.strftime('%Y%m%d'))
+            if spot_price is None:
+                continue
             # 筛选信息并排序
             va_type_mask = basic_info['ts_code'].str.contains(va_type)
             va_type_basic_info = basic_info.loc[va_type_mask].sort_values(by='delist_date', ascending=True)
@@ -71,10 +75,7 @@ class BasisSupervise(Base):
                 end_date = va_type_basic_info['delist_date'].iloc[i]
                 future_price.append(fp)
                 basis.append(spot_price - fp)
-                if (to_pydatetime(end_date) - to_pydatetime(date)).days > 0:
-                    year_cost = (1 - fp / spot_price) * 365.0 / (to_pydatetime(end_date) - to_pydatetime(date)).days
-                else:
-                    year_cost = None
+                year_cost = compute_basis(spot_price, fp, format_date.date(), to_pydatetime(end_date).date())
                 cost.append(year_cost)
             report = BasisSupervise(date=format_date,
                                     va_type=va_type,
@@ -91,12 +92,12 @@ class BasisSupervise(Base):
                                     future_2_basis=basis[1],
                                     future_3_basis=basis[2],
                                     future_4_basis=basis[3],
-                                    future_1_cost=cost[0],
+                                    future_1_cost=None if cost[0] == np.nan else cost[0],
                                     future_2_cost=cost[1],
                                     future_3_cost=cost[2],
                                     future_4_cost=cost[3])
             logger.info("[{}]-[{}]-的贴水幅度为[{}%,{}%,{}%,{}%]".format(date, va_type,
-                                                                   np.nan if cost[0] is None else round(cost[0] * 100),
+                                                                   round(cost[0] * 100),
                                                                    round(cost[1] * 100),
                                                                    round(cost[2] * 100),
                                                                    round(cost[3] * 100)))

@@ -9,14 +9,15 @@ import pandas as pd
 from apscheduler.schedulers.blocking import BlockingScheduler
 from chinese_calendar import is_holiday
 
+from app.common.log import init_logging
 from app.db.session import session_scope
 from app.db.sheet_class import BasisSupervise
-from app.utils import to_pydatetime
+from app.common.utils import to_pydatetime
 
 
 def update_basis(date_range: typing.List[dt.date] = None):
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    init_logging(logger, 'update_basis')
 
     if date_range is None:
         date_range = [dt.datetime.now().date()]
@@ -35,6 +36,8 @@ def update_basis(date_range: typing.List[dt.date] = None):
                 session.add(report)
 
         logger.info("写入数据库成功...")
+    else:
+        logger.info("本次任务无数据...")
 
 
 @click.command()
@@ -49,4 +52,4 @@ def main(mode: str):
 
 
 if __name__ == '__main__':
-    update_basis(list(pd.date_range('20220622', '20220714')))
+    main()

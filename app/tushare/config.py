@@ -39,12 +39,15 @@ def index_price(index_name: str, date: str) -> typing.Union[float, None]:
         return target_data['close'].iloc[0]
 
 
-def future_date_price(code: str, date: str) -> float:
+def future_date_price(code: str, date: str) -> typing.Union[float, None]:
     """
     返回期货合约某一天的close
     """
     df = pro.fut_daily(ts_code=code, trade_date=date, fields='ts_code,trade_date,close')
-    return float(df['close'].iloc[0])
+    if df.empty:
+        return None
+    else:
+        return float(df['close'].iloc[0])
 
 
 if __name__ == '__main__':
