@@ -9,7 +9,7 @@ from app.common.utils import check_and_mkdirs
 MAX_BYTES = 25 * 1024 * 1024
 BACK_UP_COUNT = 5
 
-LOG_DIR = '.data/log'
+LOG_DIR = r'./data/log'
 check_and_mkdirs(LOG_DIR)
 
 

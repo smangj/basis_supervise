@@ -92,12 +92,12 @@ class BasisSupervise(Base):
                                     future_2_basis=basis[1],
                                     future_3_basis=basis[2],
                                     future_4_basis=basis[3],
-                                    future_1_cost=None if cost[0] == np.nan else cost[0],
+                                    future_1_cost=None if cost[0] is np.nan else cost[0],
                                     future_2_cost=cost[1],
                                     future_3_cost=cost[2],
                                     future_4_cost=cost[3])
             logger.info("[{}]-[{}]-的贴水幅度为[{}%,{}%,{}%,{}%]".format(date, va_type,
-                                                                   round(cost[0] * 100),
+                                                                   'nan' if cost[0] is np.nan else round(cost[0] * 100),
                                                                    round(cost[1] * 100),
                                                                    round(cost[2] * 100),
                                                                    round(cost[3] * 100)))
