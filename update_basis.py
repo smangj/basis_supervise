@@ -17,7 +17,6 @@ from app.common.utils import to_pydatetime
 
 def update_basis(date_range: typing.List[dt.date] = None):
     logger = logging.getLogger()
-    init_logging(logger, 'update_basis')
 
     if date_range is None:
         date_range = [dt.datetime.now().date()]
@@ -43,6 +42,8 @@ def update_basis(date_range: typing.List[dt.date] = None):
 @click.command()
 @click.option('--mode', default='task', type=click.Choice(['task', 'once']), help='task: cron task; once: run once')
 def main(mode: str):
+    logger = logging.getLogger()
+    init_logging(logger, 'update_basis')
     if mode == 'once':
         update_basis()
     elif mode == 'task':
