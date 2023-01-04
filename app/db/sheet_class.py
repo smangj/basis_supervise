@@ -11,7 +11,7 @@ import datetime as dt
 from sqlalchemy.ext.declarative import declarative_base
 
 from app.algorithm.basis import compute_basis
-from app.db.session import project_engine
+from app.db.session import project_engine, Session
 from app.tushare import index_future_basic, index_price, future_date_price
 from app.common.utils import to_pydatetime
 
@@ -104,6 +104,18 @@ class BasisSupervise(Base):
             reports.append(report)
 
         return reports
+
+    @classmethod
+    def get_newest_data(cls) -> pd.DataFrame:
+        max_date_query = Session.query(sa.func.max(cls.date).label('date')).subquery()
+        query = Session.query(cls).join(max_date_query, max_date_query.c.date == cls.date)
+
+        return pd.read_sql(query.statement, Session.connection())
+
+    @classmethod
+    def get_newest_date(cls) -> dt.datetime:
+        data = cls.get_newest_data()
+        return to_pydatetime(data['date'].iloc[0])
 
 
 if __name__ == '__main__':

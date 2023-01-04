@@ -19,7 +19,8 @@ def update_basis(date_range: typing.List[dt.date] = None):
     logger = logging.getLogger()
 
     if date_range is None:
-        date_range = [dt.datetime.now().date()]
+        first_new_date = BasisSupervise.get_newest_date() + dt.timedelta(1)
+        date_range = [d for d in pd.date_range(first_new_date, dt.datetime.now().date()) if not is_holiday(d)]
 
     reports = []
     for date in date_range:
