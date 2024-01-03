@@ -1,0 +1,29 @@
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "black==22.12.0",
+    "flake8==5.0.4",
+    "pre-commit==3.0.4",
+    "jupyter==1.0.0",
+]
+
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "wsy", email = "631535207@qq.com"},
+]
+dependencies = [
+    "pandas==1.5.3",
+    "dash==2.8.1",
+    "dash-bootstrap-components==1.3.1",
+    "chinese-calendar==1.9.0",
+    "tushare==1.2.89",
+    "apscheduler==3.10.0",
+    "flask-sqlalchemy==3.0.3",
+    "pytest==7.2.1",
+    "gunicorn==20.1.0",
+]
+requires-python = ">=3.8"
+license = {text = "MIT"}
