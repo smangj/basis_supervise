@@ -16,7 +16,7 @@ from app.tushare import index_future_basic, index_price, future_date_price
 from app.common.utils import to_pydatetime
 
 Base = declarative_base()
-INDEX_LIST = ['IC', 'IF', 'IH']
+INDEX_LIST = ['IC', 'IF', 'IH', 'IM']
 
 
 class BasisSupervise(Base):

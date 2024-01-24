@@ -28,6 +28,8 @@ def index_price(index_name: str, date: str) -> typing.Union[float, None]:
         spot = '399300.SZ'
     elif 'IH' in index_name:
         spot = '000016.SH'
+    elif 'IM' in index_name:
+        spot = '399852.SZ'
     else:
         raise ValueError('未纳入考虑的指数！')
 
