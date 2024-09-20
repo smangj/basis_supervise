@@ -20,6 +20,7 @@ def raw_to_csv():
     raw = pd.read_csv(raw_path)
     raw.groupby()
 
+
 def csv_to_bin():
     dump_bin.DumpDataAll(
         csv_path=csv_output_dir, qlib_dir=qlib_dir, date_field_name="date"
